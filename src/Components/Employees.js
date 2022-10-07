@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './css/employees.css';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import Layout from './Layout'
+import './css/employees.css'
 
-const BASE_URL = 'http://localhost:8080/api/v1/payroll/all-employees';
+const BASE_URL = 'http://localhost:8080/api/v1/payroll/all-employees'
 
 const EmployeesData = () => {
   const navigate = useNavigate()
   const [employees, setEmployees] = useState([])
 
   useEffect(() => {
-    axios.get(BASE_URL, {
-        headers: { 
-          'Content-Type': 'application/json', 
-        }}).then((response) => {
+    axios
+      .get(BASE_URL, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
         setEmployees(response.data)
         console.log(response.data)
       })
   }, [])
 
   return (
-    <div className="container">
-      <h3>Payroll</h3>
+    <Layout title="Payroll Table">
       <div className="table-responsive">
         <table className="table table-hover">
           <thead className="thead-dark">
@@ -42,8 +45,10 @@ const EmployeesData = () => {
           <tbody>
             {employees.map((employee) => (
               <tr key={employee.employeeId}>
-                <td onClick={() => navigate(`/employee/${employee.employeeId}`)}>
-                  <img 
+                <td
+                  onClick={() => navigate(`/employee/${employee.employeeId}`)}
+                >
+                  <img
                     className="employeeImage"
                     src={'data:image/png;base64,' + employee.employeeImage.data}
                     alt={employee.employeeImage.name}
@@ -71,8 +76,8 @@ const EmployeesData = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </Layout>
   )
 }
 
-export default EmployeesData;
+export default EmployeesData

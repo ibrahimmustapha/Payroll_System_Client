@@ -1,4 +1,9 @@
 /* Employee Component Styling */
+.employee_container {
+  width: 1000px;
+  margin: auto;
+}
+
 .m-employeeImage {
   width: 100px;
   height: 100px;

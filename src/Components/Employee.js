@@ -10,7 +10,6 @@ const EmployeeData = () => {
   const [employee, setEmployee] = useState({})
   const [employeeImage, setEmployeeImage] = useState({})
   const [salary, setSalary] = useState({})
-
   useEffect(() => {
     axios
       .get(`${BASE_URL}/${id}`)
@@ -24,17 +23,15 @@ const EmployeeData = () => {
   }, [id])
 
   return (
-    <div className="container">
+    <div className="employee_container text-muted">
       <h1>Employee Info</h1>
       <hr />
-      <div>
         <img
           src={'data:image/jpg;base64,' + employeeImage.data}
           alt={employeeImage.name}
           className="m-employeeImage"
         />
-      </div>
-      <p>
+      <p className="text-muted">
         <b>Fullname:</b> {employee.employeeFirstName} {employee.employeeLastName}
       </p>
       <p><b>Email:</b> {employee.employeeEmail}</p>
