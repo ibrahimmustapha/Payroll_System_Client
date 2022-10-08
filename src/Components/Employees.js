@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import Layout from './Layout'
-import './css/employees.css'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import Layout from './Layout';
+import './css/employees.css';
+import PopupMessage from './RemovePopup';
 
-const BASE_URL = 'http://localhost:8080/api/v1/payroll/all-employees'
+const BASE_URL = 'http://localhost:8080/api/v1/payroll/all-employees';
 
 const EmployeesData = () => {
-  const navigate = useNavigate()
-  const [employees, setEmployees] = useState([])
+  const navigate = useNavigate();
+  const [employees, setEmployees] = useState([]);
+  const [remove, setRemove] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     axios
@@ -23,6 +26,21 @@ const EmployeesData = () => {
       })
   }, [])
 
+  const deleteEmployee = async (id) => {
+    await axios
+      .delete(`http://localhost:8080/api/v1/payroll/delete/${id}`, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then(
+        () => window.location.reload(true),
+        setRemove('Deleted Successfully'),
+      )
+      .catch((error) => {
+        setError(error.message)
+        console.log('There was an error ' + error.message)
+      })
+  }
+
   return (
     <Layout title="Payroll Table">
       <div className="table-responsive">
@@ -33,10 +51,7 @@ const EmployeesData = () => {
               <th>Firstname</th>
               <th>Lastname</th>
               <th>Email</th>
-              <th>Age</th>
-              <th>DOB</th>
               <th>Address</th>
-              <th>Contact</th>
               <th>Gender</th>
               <th>Salary</th>
               <th>Actions</th>
@@ -57,20 +72,36 @@ const EmployeesData = () => {
                 <td>{employee.employeeFirstName}</td>
                 <td>{employee.employeeLastName}</td>
                 <td>{employee.employeeEmail}</td>
-                <td>{employee.employeeAge}</td>
-                <td>{employee.employeeDateOfBirth}</td>
                 <td>{employee.employeeAddress}</td>
-                <td>{employee.employeeContact}</td>
                 <td>{employee.employeeGender}</td>
                 <td>{employee.salary.netIncome}</td>
                 <td>
-                  <a href="#hello" className="btn btn-primary">
+                  <Link to="#hello" className="btn btn-primary">
                     Update
-                  </a>
-                  <a href="#hello" className="btn btn-danger">
+                  </Link>
+                  <button
+                    to="/"
+                    className="btn btn-danger"
+                    data-toggle="modal"
+                    data-target="#myModal"
+                  >
                     Delete
-                  </a>
+                  </button>
                 </td>
+                <PopupMessage
+                  firstname={
+                    employee.employeeFirstName + ' ' + employee.employeeLastName
+                  }
+                >
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    data-dismiss="modal"
+                    onClick={() => deleteEmployee(employee.employeeId)}
+                  >
+                    Yes
+                  </button>
+                </PopupMessage>
               </tr>
             ))}
           </tbody>
